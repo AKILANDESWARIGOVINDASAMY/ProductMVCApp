@@ -53,9 +53,18 @@ namespace ProductMVCApp
             })
             .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
-        //
+            //
+            services.AddHttpClient();
 
-        services.AddDbContext<ProductDbContext>(options =>
+            services.AddAuthentication("Bearer")
+               .AddJwtBearer("Bearer", options =>
+               {                   
+                   options.Authority = "https://login.microsoftonline.com/99c6e427-2c54-4170-a99f-ceaee4ddd05d/oauth2/v2.0";
+                   options.Audience = "api://5bde723a-cef0-4ea1-b9e8-b63029c94118";
+                   options.TokenValidationParameters.ValidIssuer = "https://sts.windows.net/99c6e427-2c54-4170-a99f-ceaee4ddd05d/";
+               });
+
+            services.AddDbContext<ProductDbContext>(options =>
            options.UseSqlServer(Configuration.GetConnectionString("SqlConnection")));
 
         }
@@ -84,7 +93,7 @@ namespace ProductMVCApp
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Products1}/{action=Index}/{id?}");
             });
         }
     }
